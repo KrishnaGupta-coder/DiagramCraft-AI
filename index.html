@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DiagramCraft AI — GitHub-Safe Mermaid Architect & SVG/PNG Exporter</title>
+  <meta name="description" content="Convert plain English steps or system descriptions into error-free, GitHub-compliant Mermaid diagrams with automatic syntax sanitization and SVG/PNG export.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <div class="shell">
+    <header class="navbar">
+      <div class="brand">
+        <div class="logo">📐</div>
+        <div>
+          <h1>DiagramCraft <span class="accent">AI</span></h1>
+          <p class="subtitle">GitHub-Safe Mermaid Diagram Generator, Auto-Sanitizer & SVG/PNG Exporter</p>
+        </div>
+      </div>
+      <div class="nav-actions">
+        <span class="ai-pill" id="aiEngineBadge">Engine: Deterministic + Templates</span>
+        <a href="https://krishnagupta-coder.github.io/" class="btn btn-ghost">⚡ Krishna.OS</a>
+        <a href="https://github.com/KrishnaGupta-coder/DiagramCraft-AI" target="_blank" class="btn btn-ghost">GitHub</a>
+      </div>
+    </header>
+
+    <main class="studio">
+      <!-- Left: Prompt / Mermaid Code -->
+      <section class="panel">
+        <div class="panel-head">
+          <div class="tabs">
+            <button class="tab active" id="tabPrompt">Plain English &rarr; Diagram</button>
+            <button class="tab" id="tabCode">Mermaid Source</button>
+          </div>
+          <select id="templateSelect">
+            <option value="">Templates...</option>
+            <option value="rag">RAG AI Pipeline</option>
+            <option value="auth">JWT Auth Sequence</option>
+            <option value="db">SaaS Database ERD</option>
+            <option value="cicd">GitHub Actions CI/CD</option>
+          </select>
+        </div>
+
+        <div id="panePrompt" class="pane">
+          <textarea id="englishInput" placeholder="Describe your workflow step-by-step, e.g.:
+User uploads PDF -> PDF.js extracts text -> Chunker splits paragraphs -> Vector DB stores embeddings -> LLM generates answer"></textarea>
+          <div class="pane-foot">
+            <select id="diagramTypeSelect">
+              <option value="flowchart TD">Flowchart (Top-Down)</option>
+              <option value="flowchart LR">Flowchart (Left-Right)</option>
+              <option value="sequenceDiagram">Sequence Diagram</option>
+            </select>
+            <div class="btn-row">
+              <button id="btnGenerateLocal" class="btn btn-secondary">Instant Build ⚡</button>
+              <button id="btnGenerateAi" class="btn btn-primary">AI Architect ✨</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="paneCode" class="pane hidden">
+          <textarea id="mermaidCodeInput" spellcheck="false" placeholder="Mermaid code appears here..."></textarea>
+          <div class="pane-foot">
+            <span class="hint-ok" id="lintStatus">✅ Syntax clean</span>
+            <div class="btn-row">
+              <button id="btnFixQuotes" class="btn btn-secondary" title="Wraps unquoted node labels with parentheses/slashes in double quotes for GitHub compatibility">Fix GitHub Red-Box Quotes 🛡️</button>
+              <button id="btnCopyMd" class="btn btn-primary">Copy GitHub Markdown</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right: Live Render Canvas -->
+      <section class="panel preview-panel">
+        <div class="panel-head">
+          <h3>🖼️ Live Canvas Preview</h3>
+          <div class="btn-row">
+            <button id="btnDownloadSvg" class="btn btn-sm btn-secondary">Export SVG</button>
+            <button id="btnDownloadPng" class="btn btn-sm btn-primary">Export PNG</button>
+          </div>
+        </div>
+        <div class="preview-canvas" id="mermaidPreview"></div>
+        <div class="error-banner hidden" id="renderErrorBox"></div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <span>DiagramCraft AI &bull; Zero GitHub Parse Errors &bull; Part of <a href="https://krishnagupta-coder.github.io/">Krishna.OS</a></span>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
