@@ -173,7 +173,7 @@
       const res = await fetch(cfg.endpoint || 'http://localhost:11434/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ model: cfg.model || 'qwen2.5:7b', messages: [{ role: 'user', content: prompt }], stream: false })
+        body: JSON.stringify({ model: cfg.model || 'qwen2.5:3b', messages: [{ role: 'user', content: prompt }], stream: false })
       });
       const data = await res.json();
       return data.message?.content || data.response || '';
@@ -294,3 +294,4 @@
   mermaidCodeInput.value = TEMPLATES.rag;
   renderDiagram();
 })();
+
