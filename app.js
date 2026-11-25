@@ -11,6 +11,7 @@
     startOnLoad: false,
     theme: 'dark',
     securityLevel: 'loose',
+    flowchart: { htmlLabels: false },
     themeVariables: {
       primaryColor: '#131d33',
       primaryTextColor: '#f1f5f9',
@@ -98,12 +99,12 @@
     paneCode.classList.toggle('hidden', isPrompt);
   }
 
-  // Ensures node labels in [ ... ] are double-quoted for GitHub's strict Mermaid parser
+  // Ensures node labels in [...], (...), and {...} are double-quoted for GitHub's strict Mermaid parser
   function sanitizeGitHubMermaid(code) {
-    return code.replace(/([A-Za-z0-9_]+)\[([^\]"\n]+)\]/g, (_, id, label) => {
-      const cleanLabel = label.trim().replace(/"/g, "'");
-      return `${id}["${cleanLabel}"]`;
-    });
+    return code
+      .replace(/([A-Za-z0-9_]+)\[([^\]"\n]+)\]/g, (_, id, label) => `${id}["${label.trim().replace(/"/g, "'")}"]`)
+      .replace(/([A-Za-z0-9_]+)\(([^()"\n]*[()/\\][^()"\n]*)\)/g, (_, id, label) => `${id}("${label.trim().replace(/"/g, "'")}")`)
+      .replace(/([A-Za-z0-9_]+)\{([^{}"\n]+)\}/g, (_, id, label) => `${id}{"${label.trim().replace(/"/g, "'")}"}`);
   }
 
   // Deterministic Plain-English -> Mermaid Compiler
@@ -179,7 +180,7 @@
       return data.message?.content || data.response || '';
     }
     if (cfg.provider === 'gemini') {
-      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${cfg.model || 'gemini-2.5-flash'}:generateContent?key=${cfg.apiKey}`, {
+      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${cfg.model || 'gemini-4-hydrogen'}:generateContent?key=${cfg.apiKey}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
