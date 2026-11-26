@@ -7,6 +7,7 @@ on:
 
 permissions:
   contents: read
+  actions: read
   pages: write
   id-token: write
 
@@ -18,7 +19,7 @@ jobs:
   deploy:
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: ${{ steps.deployment.outputs.page_url || steps.deployment_retry.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -32,7 +33,29 @@ jobs:
         with:
           path: '.'
 
+      - name: Wait for Pages Artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for i in 1 2 3 4 5 6; do
+            if curl -sf -H "Authorization: Bearer $GH_TOKEN" "https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts" | grep -Eq '"name":[[:space:]]*"github-pages"'; then
+              sleep 2
+              exit 0
+            fi
+            sleep 3
+          done
+
       - name: Deploy to GitHub Pages
         id: deployment
+        uses: actions/deploy-pages@v4
+        continue-on-error: true
+
+      - name: Wait before Pages Retry
+        if: steps.deployment.outcome != 'success'
+        run: sleep 10
+
+      - name: Retry Deploy to GitHub Pages
+        id: deployment_retry
+        if: steps.deployment.outcome != 'success'
         uses: actions/deploy-pages@v4
 
